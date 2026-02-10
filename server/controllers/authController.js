@@ -18,7 +18,7 @@ export const register = async (req, res) => {
     const user = new userModel({ name, email, password: hashedPassword });
     await user.save();
 
-    const token = jwt.sign({ id: user, _id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
@@ -40,7 +40,7 @@ export const loging = async (req, res) => {
 
   if (!email || !password) {
     return res.json({
-      sucess: false,
+      success: false,
       message: "Email and password are required",
     });
   }
@@ -48,15 +48,15 @@ export const loging = async (req, res) => {
   try {
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.json({ sucess: false, message: "Invalid email" });
+      return res.json({ success: false, message: "Invalid email" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.json({ sucess: false, message: "Invalid password" });
+      return res.json({ success: false, message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user, _id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
@@ -69,7 +69,7 @@ export const loging = async (req, res) => {
 
     return res.json({ success: true });
   } catch (error) {
-    return res.json({ success: false, messgae: error.message });
+    return res.json({ success: false, message: error.message });
   }
 };
 
@@ -83,6 +83,6 @@ export const logout = async (req, res) => {
 
     return res.json({ success: true, message: "Logged Out" });
   } catch (error) {
-    return res.json({ sucess: false, message: error.message });
+    return res.json({ success: false, message: error.message });
   }
 };
